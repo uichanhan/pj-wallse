@@ -27,6 +27,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ rentData, onOpenSettings }
     const { today, monthly, thisMonth, perSecond } = useRentCounter(rentData);
     const [selectedUnit, setSelectedUnit] = useState<RentUnit>(UNIT_LIST[0]);
     const [isUnitMenuOpen, setIsUnitMenuOpen] = useState(false);
+    const [copied, setCopied] = useState(false);
     const [jokeIndex, setJokeIndex] = useState(0);
     const [isShaking, setIsShaking] = useState(false);
     const [lastMilestone, setLastMilestone] = useState(0);
@@ -80,19 +81,14 @@ export const Dashboard: React.FC<DashboardProps> = ({ rentData, onOpenSettings }
     }, []);
 
     const handleShare = () => {
-        const unitDisplay = selectedUnit.suffix;
-        const text = `💸 실시간 방세 보고서 (${selectedUnit.name})\n- 오늘 발생한 방값: ${convert(today).toLocaleString(undefined, { maximumFractionDigits: 2 })}${unitDisplay}\n- 이번 달 누적: ${convert(thisMonth).toLocaleString(undefined, { maximumFractionDigits: 2 })}${unitDisplay}\n- 입주일 이후 누적: ${convert(monthly).toLocaleString(undefined, { maximumFractionDigits: 2 })}${unitDisplay}\n우리 같이 힘내자... #월세지옥 #킹받네`;
+        const shareUrl = "https://pj-wallse-gepzphhfz-uichans-projects.vercel.app/";
 
-        if (navigator.share) {
-            navigator.share({
-                title: '월세 체감 카운터',
-                text: text,
-                url: window.location.href,
-            }).catch(console.error);
-        } else {
-            navigator.clipboard.writeText(text);
-            alert('보고서가 복사되었습니다. 친구에게 보여주세요!');
-        }
+        navigator.clipboard.writeText(shareUrl).then(() => {
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+        }).catch(err => {
+            console.error('Copy failed:', err);
+        });
     };
 
     return (
@@ -220,10 +216,16 @@ export const Dashboard: React.FC<DashboardProps> = ({ rentData, onOpenSettings }
 
                     <button
                         onClick={handleShare}
-                        className="flex-1 w-full md:w-auto h-14 py-3 flex items-center justify-center gap-2 bg-white text-black rounded-full font-bold hover:bg-zinc-200 transition-all active:scale-95 text-sm md:text-base outline-none"
+                        className={`flex-1 w-full md:w-auto h-14 py-3 flex items-center justify-center gap-2 rounded-full font-bold transition-all active:scale-95 text-sm md:text-base outline-none ${copied ? 'bg-green-500 text-white' : 'bg-white text-black hover:bg-zinc-200'}`}
                     >
-                        <Share2 size={20} />
-                        결과 공유하기
+                        {copied ? (
+                            <>복사 완료!</>
+                        ) : (
+                            <>
+                                <Share2 size={20} />
+                                링크 공유하기
+                            </>
+                        )}
                     </button>
                 </div>
             </motion.div>

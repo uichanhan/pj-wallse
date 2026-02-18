@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { X, Share2 } from 'lucide-react';
+import { X } from 'lucide-react';
 import { RentData } from '../utils/rentUtils';
 
 interface SettingsModalProps {
@@ -116,27 +116,10 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                             required
                         />
                     </div>
-                    <div className="flex gap-3 mt-6">
-                        <button
-                            type="button"
-                            onClick={() => {
-                                const url = new URL(window.location.origin);
-                                if (formData.userName) url.searchParams.set('name', formData.userName);
-                                url.searchParams.set('rent', formData.totalRent.toString());
-                                url.searchParams.set('date', formData.startDate);
-                                url.searchParams.set('payday', formData.paymentDay.toString());
-
-                                navigator.clipboard.writeText(url.toString());
-                                alert('공유용 링크가 복사되었습니다!');
-                            }}
-                            className="flex-[1] bg-zinc-800 border border-zinc-700 text-white font-bold py-3 rounded-lg hover:bg-zinc-700 active:scale-95 transition-all outline-none flex items-center justify-center gap-2 text-sm"
-                        >
-                            <Share2 size={18} />
-                            링크 공유
-                        </button>
+                    <div className="mt-6">
                         <button
                             type="submit"
-                            className="flex-[2] bg-[#F22E30] text-white font-bold py-3 rounded-lg hover:brightness-90 active:scale-95 transition-all outline-none text-sm"
+                            className="w-full bg-[#F22E30] text-white font-bold py-3 rounded-lg hover:brightness-90 active:scale-95 transition-all outline-none text-sm"
                         >
                             설정 저장하기
                         </button>
