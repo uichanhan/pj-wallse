@@ -53,15 +53,33 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-zinc-400 mb-1 text-[11px] md:text-sm">합산 납부액 (월세+공과금+관리비)</label>
-                        <input
-                            type="number"
-                            value={formData.totalRent}
-                            onChange={(e) => setFormData({ ...formData, totalRent: Number(e.target.value) })}
-                            className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-[#F22E30] transition-colors text-sm"
-                            placeholder="예: 600000"
-                            required
-                        />
+                        <label className="block text-sm font-medium text-zinc-400 mb-1 text-[11px] md:text-sm">매달 납부액</label>
+                        <div className="flex items-center bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 focus-within:border-[#F22E30] transition-colors">
+                            <div className="relative flex items-center min-w-0">
+                                <input
+                                    type="text"
+                                    value={formData.totalRent === 0 ? '' : formData.totalRent.toLocaleString()}
+                                    onChange={(e) => {
+                                        const value = e.target.value.replace(/,/g, '');
+                                        if (value === '') {
+                                            setFormData({ ...formData, totalRent: 0 });
+                                        } else if (!isNaN(Number(value))) {
+                                            setFormData({ ...formData, totalRent: Number(value) });
+                                        }
+                                    }}
+                                    className="bg-transparent text-white focus:outline-none text-sm"
+                                    placeholder="예: 600,000"
+                                    required
+                                    style={{
+                                        width: formData.totalRent === 0 ? '100px' : `${(formData.totalRent.toLocaleString().length * 8.5) + 5}px`,
+                                        minWidth: '20px'
+                                    }}
+                                />
+                                {formData.totalRent !== 0 && (
+                                    <span className="text-zinc-500 text-sm font-bold ml-1 shrink-0">원</span>
+                                )}
+                            </div>
+                        </div>
                     </div>
                     <div>
                         <label className="block text-sm font-medium text-zinc-400 mb-1 text-[11px] md:text-sm">최초 입주일 (YYYY.MM.DD)</label>
@@ -105,16 +123,35 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     </div>
                     <div>
                         <label className="block text-sm font-medium text-zinc-400 mb-1 text-[11px] md:text-sm">매달 납부일</label>
-                        <input
-                            type="number"
-                            min="1"
-                            max="31"
-                            value={formData.paymentDay}
-                            onChange={(e) => setFormData({ ...formData, paymentDay: Number(e.target.value) })}
-                            className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-[#F22E30] transition-colors text-sm"
-                            placeholder="예: 25"
-                            required
-                        />
+                        <div className="flex items-center bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 focus-within:border-[#F22E30] transition-colors">
+                            <div className="relative flex items-center min-w-0">
+                                <input
+                                    type="text"
+                                    value={formData.paymentDay === 0 ? '' : formData.paymentDay}
+                                    onChange={(e) => {
+                                        const value = e.target.value.replace(/\D/g, '');
+                                        if (value === '') {
+                                            setFormData({ ...formData, paymentDay: 0 });
+                                        } else {
+                                            const num = Number(value);
+                                            if (num <= 31) {
+                                                setFormData({ ...formData, paymentDay: num });
+                                            }
+                                        }
+                                    }}
+                                    className="bg-transparent text-white focus:outline-none text-sm"
+                                    placeholder="예: 25"
+                                    required
+                                    style={{
+                                        width: formData.paymentDay === 0 ? '60px' : `${(String(formData.paymentDay).length * 9) + 5}px`,
+                                        minWidth: '20px'
+                                    }}
+                                />
+                                {formData.paymentDay !== 0 && (
+                                    <span className="text-zinc-500 text-sm font-bold ml-1 shrink-0">일</span>
+                                )}
+                            </div>
+                        </div>
                     </div>
                     <div className="mt-6">
                         <button

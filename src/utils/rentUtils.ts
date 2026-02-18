@@ -16,7 +16,7 @@ export const UNIT_LIST: RentUnit[] = [
   { name: '달러', value: 1450, suffix: '$' },
   { name: '두쫀쿠', value: 7000, suffix: '개' },
   { name: '국밥', value: 10000, suffix: '그릇' },
-  { name: '엽기떡볶이', value: 15000, suffix: '그릇' },
+  { name: '엽떡', value: 15000, suffix: '그릇' },
   { name: '엄복동', value: 170000, suffix: 'UBD' },
   { name: '아이폰 17', value: 1320000, suffix: '대' },
 ];

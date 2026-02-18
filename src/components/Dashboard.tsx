@@ -7,15 +7,27 @@ import { useRentCounter } from '../hooks/useRentCounter';
 import { RentData, UNIT_LIST, RentUnit } from '../utils/rentUtils';
 import { MoneyEffects } from './MoneyEffects';
 
-const JOKES = [
-    "이 돈이면 국밥이 몇 그릇이야?",
+const RENT_QUOTES = [
     "숨만 쉬어도 돈이 나가네...",
-    "월급은 통장을 스칠 뿐...",
-    "커피 한 잔 덜 마시면 뭐해, 월세가 이건데.",
-    "집주인 웃음소리가 여기까지 들린다.",
-    "오늘도 누군가의 대출 이자를 대신 갚아주고 계시는군요.",
-    "한강 뷰는 아니어도 한강 물 온도는 체크하게 되네.",
-    "월세 내려고 태어난 건 아닐 텐데."
+    "당신은~ 건물주를 위해 태어난 사람~ 지금도 그 집 속에서~",
+    "오늘도 열심히 사세요, 건물주님 외제차 바꿔드려야지.",
+    "방금 눈 깜빡일 때마다 돈 증발 중.",
+    "내 월급은 월세를 잠시 거쳐갈 뿐...",
+    "오늘 월세 많이 된다. 자기 전에 생각날거야",
+    "아차! 하는 순간 빼앗깁니다.",
+    "지금 이 순간에도 통장에 빨대 꽂혀있음.",
+    "1초에 한 번씩 통장에 구멍 뚫리는 소리 들리세요?",
+    "건물주님: \"세입자씨, 이번 달도 덕분에 따뜻하네요! 당신은 아니겠지만\"",
+    "아끼고 아껴서 건물주님 부자 만들어드리기.",
+    "월세 내려고 출근하는 당신, 이 시대의 진정한 효자.",
+    "월세가 차올라서 고갤 들어 흐르지 못하게 또 살짝 웃어.",
+    "얘 이거 아직도 안 껐어? 뭐해 그시간에 가서 돈벌어!",
+    "숨 쉬는 것도 유료인 세상에 살고 계십니다.",
+    "이렇게 비싼 집을 당신은 얼마나 이용하시나요?",
+    "돈 복사 버그는 없어도 돈 삭제 버그는 실시간 가동 중.",
+    "내 인생은 월세 상환의 굴레.",
+    "건물주님 오늘 저녁은 스테이크 드시겠네요.",
+    "한강 뷰는 아니어도 한강 물 온도는 체크하게 되는 금액..."
 ];
 
 interface DashboardProps {
@@ -72,16 +84,14 @@ export const Dashboard: React.FC<DashboardProps> = ({ rentData, onOpenSettings }
         }
     }, [monthly, lastMilestone]);
 
-    // Rotate jokes every 5 seconds
+    // Select a random quote on mount
     useEffect(() => {
-        const interval = setInterval(() => {
-            setJokeIndex((prev) => (prev + 1) % JOKES.length);
-        }, 5000);
-        return () => clearInterval(interval);
+        const randomIndex = Math.floor(Math.random() * RENT_QUOTES.length);
+        setJokeIndex(randomIndex);
     }, []);
 
     const handleShare = () => {
-        const shareUrl = "https://pj-wallse-gepzphhfz-uichans-projects.vercel.app/";
+        const shareUrl = "https://pj-wallse.vercel.app";
 
         navigator.clipboard.writeText(shareUrl).then(() => {
             setCopied(true);
@@ -114,7 +124,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ rentData, onOpenSettings }
             >
                 <div className="space-y-4">
                     <h1 className="text-zinc-500 font-medium tracking-tight uppercase text-xs md:text-sm">
-                        <span className="text-[#F22E30] font-bold">{rentData.userName || '친구'}</span>님의 오늘 발생하고 있는 실시간 방세
+                        <span className="text-[#F22E30] font-bold">{rentData.userName || '친구'}</span>님, 오늘에만 벌써 이만큼 추가됐어요!
                     </h1>
                     <div
                         className="text-5xl md:text-8xl font-black tabular-nums flex items-baseline justify-center flex-wrap w-full px-4"
@@ -140,7 +150,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ rentData, onOpenSettings }
                             exit={{ opacity: 0, y: -10 }}
                             className="text-zinc-400 italic text-sm md:text-lg line-clamp-2 max-w-lg"
                         >
-                            &quot;{JOKES[jokeIndex]}&quot;
+                            &quot;{RENT_QUOTES[jokeIndex]}&quot;
                         </motion.p>
                     </AnimatePresence>
                 </div>
@@ -223,7 +233,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ rentData, onOpenSettings }
                         ) : (
                             <>
                                 <Share2 size={20} />
-                                링크 공유하기
+                                링크 복사하기
                             </>
                         )}
                     </button>

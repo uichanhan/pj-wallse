@@ -63,9 +63,20 @@ const GUKBAP_SVG = `data:image/svg+xml;base64,${btoa(`
 <svg width="240" height="240" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="120" cy="120" r="73.5" fill="#EFE4DC" stroke="#6A4B46" stroke-width="11"/><path d="M73 120C73 94.0426 94.0426 73 120 73" stroke="white" stroke-width="21" stroke-linecap="round"/><rect x="85.9023" y="143.603" width="38" height="23" rx="11.5" transform="rotate(-64 85.9023 143.603)" fill="#89684D"/><rect x="110.361" y="106.197" width="38" height="23" rx="11.5" transform="rotate(-30 110.361 106.197)" fill="#89684D"/><rect x="88.0762" y="102.195" width="38" height="23" rx="11.5" transform="rotate(20 88.0762 102.195)" fill="#A68167"/><rect x="152.094" y="135.792" width="38" height="23" rx="11.5" transform="rotate(-164 152.094 135.792)" fill="#A68167"/><rect x="131" y="80" width="38" height="23" rx="11.5" transform="rotate(90 131 80)" fill="#A68167"/><rect x="108" y="157" width="38" height="23" rx="11.5" transform="rotate(-90 108 157)" fill="#A68167"/><rect x="140.254" y="109.858" width="38" height="23" rx="11.5" transform="rotate(71 140.254 109.858)" fill="#89684D"/><rect x="98.1445" y="83.3965" width="38" height="23" rx="11.5" transform="rotate(42 98.1445 83.3965)" fill="#89684D"/><circle cx="123.5" cy="129.5" r="6.5" stroke="#92D644" stroke-width="4"/><circle cx="107" cy="120" r="5" stroke="#3EB538" stroke-width="4"/><circle cx="115.5" cy="105.5" r="6.5" stroke="#92D644" stroke-width="4"/><circle cx="131" cy="115" r="5" stroke="#3EB538" stroke-width="4"/></svg>
 `)}`;
 
-// [5] 엽기떡볶이
+// [5] 엽떡
 const YEOB_SVG = `data:image/svg+xml;base64,${btoa(`
-<svg width="240" height="240" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="120" cy="120" r="73.5" fill="#FB4C3D" stroke="#F4DEDE" stroke-width="11"/><path d="M113 62C113 62 60.9998 97.5 67.9998 118.229C74.9998 138.957 130.333 62.8763 138.454 86.6857C146.576 110.495 90.9299 131.972 105.999 150.5C121.069 169.028 149.618 103.663 165.5 121.5C181.382 139.337 132.999 173 132.999 173" stroke="#FFE9B6" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/><circle cx="123.5" cy="129.5" r="6.5" stroke="#92D644" stroke-width="4"/><circle cx="107" cy="120" r="5" stroke="#3EB538" stroke-width="4"/><circle cx="115.5" cy="105.5" r="6.5" stroke="#92D644" stroke-width="4"/><circle cx="131" cy="115" r="5" stroke="#3EB538" stroke-width="4"/><path d="M80.9199 124C77.5882 128.139 76.711 138.133 78.5 141.865" stroke="#E82E2E" stroke-width="21" stroke-linecap="round"/><path d="M154 100C158.312 102.865 164.081 111.014 164 115" stroke="#E82E2E" stroke-width="21" stroke-linecap="round"/><path d="M119 155C121.02 157.939 125.615 164.519 127 167" stroke="#FF783F" stroke-width="21" stroke-linecap="round"/><path d="M133.287 73.7034C137.871 71.4178 147.835 73.4465 149.756 75.3699" stroke="#FF783F" stroke-width="21" stroke-linecap="round"/></svg>
+<svg width="240" height="240" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="120" cy="120" r="73.5" fill="#FB4C3D" stroke="#F4DEDE" stroke-width="11"/>
+<path d="M113 62C113 62 60.9998 97.5 67.9998 118.229C74.9998 138.957 130.333 62.8763 138.454 86.6857C146.576 110.495 90.9299 131.972 105.999 150.5C121.069 169.028 149.618 103.663 165.5 121.5C181.382 139.337 132.999 173 132.999 173" stroke="#FFE9B6" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="123.5" cy="129.5" r="6.5" stroke="#92D644" stroke-width="4"/>
+<circle cx="107" cy="120" r="5" stroke="#3EB538" stroke-width="4"/>
+<circle cx="115.5" cy="105.5" r="6.5" stroke="#92D644" stroke-width="4"/>
+<circle cx="131" cy="115" r="5" stroke="#3EB538" stroke-width="4"/>
+<path d="M80.9199 124C77.5882 128.139 76.711 138.133 78.5 141.865" stroke="#E82E2E" stroke-width="21" stroke-linecap="round"/>
+<path d="M154 100C158.312 102.865 164.081 111.014 164 115" stroke="#E82E2E" stroke-width="21" stroke-linecap="round"/>
+<path d="M119 155C121.02 157.939 125.615 164.519 127 167" stroke="#FF783F" stroke-width="21" stroke-linecap="round"/>
+<path d="M133.287 73.7034C137.871 71.4178 147.835 73.4465 149.756 75.3699" stroke="#FF783F" stroke-width="21" stroke-linecap="round"/>
+</svg>
 `)}`;
 
 // [6] 엄복동
@@ -83,7 +94,7 @@ const UNIT_ASSET_MAP: Record<string, string> = {
     '달러': USD_SVG,
     '두쫀쿠': DUZ_SVG,
     '국밥': GUKBAP_SVG,
-    '엽기떡볶이': YEOB_SVG,
+    '엽떡': YEOB_SVG,
     '엄복동': UBD_SVG,
     '아이폰 17': IPHONE_SVG,
 };
