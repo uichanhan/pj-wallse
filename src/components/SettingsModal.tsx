@@ -132,7 +132,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                             className="flex-[1] bg-zinc-800 border border-zinc-700 text-white font-bold py-3 rounded-lg hover:bg-zinc-700 active:scale-95 transition-all outline-none flex items-center justify-center gap-2 text-sm"
                         >
                             <Share2 size={18} />
-                            공유 링크 복사
+                            링크 공유
                         </button>
                         <button
                             type="submit"

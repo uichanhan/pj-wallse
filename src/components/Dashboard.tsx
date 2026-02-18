@@ -41,6 +41,24 @@ export const Dashboard: React.FC<DashboardProps> = ({ rentData, onOpenSettings }
         return value / selectedUnit.value;
     };
 
+    const renderValue = (value: number, sizeClasses: { whole: string, decimal: string, unit: string }, options?: { isGradient?: boolean }) => {
+        const formatted = convert(value).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        const [whole, decimal] = formatted.split('.');
+
+        return (
+            <span className="inline-flex items-baseline flex-wrap">
+                <span className={sizeClasses.whole}>{whole}</span>
+                <span
+                    className={`${sizeClasses.decimal} ${options?.isGradient ? 'bg-clip-text text-transparent' : 'text-white/50'}`}
+                    style={options?.isGradient ? { backgroundImage: 'linear-gradient(180deg,#F22E3080_0%,#C6105680_70%,#F8587780_100%)' } : undefined}
+                >
+                    .{decimal}
+                </span>
+                <span className={sizeClasses.unit + " ml-1 uppercase tracking-wide"}>{selectedUnit.suffix}</span>
+            </span>
+        );
+    };
+
     // Milestone shake effect (every 1000 KRW)
     useEffect(() => {
         const currentMilestone = Math.floor(monthly / 1000);
@@ -103,47 +121,63 @@ export const Dashboard: React.FC<DashboardProps> = ({ rentData, onOpenSettings }
                         <span className="text-[#F22E30] font-bold">{rentData.userName || '친구'}</span>님의 오늘 발생하고 있는 실시간 방세
                     </h1>
                     <div
-                        className="text-5xl md:text-8xl font-black tabular-nums flex items-baseline justify-center flex-wrap"
+                        className="text-5xl md:text-8xl font-black tabular-nums flex items-baseline justify-center flex-wrap w-full px-4"
                     >
-                        <span className="text-2xl md:text-4xl text-zinc-400 font-bold mr-3 tracking-normal">{selectedUnit.name}</span>
-                        <span className="bg-[linear-gradient(180deg,#F22E30_0%,#C61056_70%,#F85877_100%)] bg-clip-text text-transparent drop-shadow-[0_0_15px_rgba(242,46,48,0.4)] tracking-tighter">
-                            {convert(today).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        <span className="text-2xl md:text-4xl text-zinc-400 font-bold mr-3 tracking-wider">{selectedUnit.name}</span>
+                        <span className="bg-[linear-gradient(180deg,#F22E30_0%,#C61056_70%,#F85877_100%)] bg-clip-text text-transparent drop-shadow-[0_0_15px_rgba(242,46,48,0.4)] tracking-tighter pr-10">
+                            {renderValue(today, {
+                                whole: "",
+                                decimal: "",
+                                unit: "text-xl md:text-3xl bg-[linear-gradient(180deg,#F22E30_0%,#C61056_70%,#F85877_100%)] bg-clip-text text-transparent"
+                            }, { isGradient: true })}
                         </span>
-                        <span className="text-xl md:text-3xl uppercase ml-1 tracking-normal bg-[linear-gradient(180deg,#F22E30_0%,#C61056_70%,#F85877_100%)] bg-clip-text text-transparent">{selectedUnit.suffix}</span>
                     </div>
                 </div>
 
-                <div className="space-y-2">
-                    <p className="text-[#F22E30] text-xs md:text-sm font-medium uppercase tracking-normal">지금까지 발생한 이번달 월세</p>
-                    <div className="text-2xl md:text-4xl font-bold tabular-nums text-white flex items-baseline justify-center">
-                        <span className="text-lg md:text-2xl text-zinc-500 font-bold mr-2 tracking-normal">{selectedUnit.name}</span>
-                        <span className="tracking-tighter">{convert(thisMonth).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-                        <span className="text-sm md:text-lg ml-1 tracking-normal">{selectedUnit.suffix}</span>
-                    </div>
+                {/* 2단: 감성 문구 (D) */}
+                <div className="py-8 h-24 flex items-center justify-center overflow-hidden w-full text-center px-6">
+                    <AnimatePresence mode="wait">
+                        <motion.p
+                            key={jokeIndex}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -10 }}
+                            className="text-zinc-400 italic text-sm md:text-lg line-clamp-2 max-w-lg"
+                        >
+                            "{JOKES[jokeIndex]}"
+                        </motion.p>
+                    </AnimatePresence>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 pt-8 w-full">
-                    <div className="bg-black/50 backdrop-blur-md p-6 rounded-2xl border border-zinc-800">
+                {/* 3단: 2열 그리드 (C, B) */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 pt-4 w-full">
+                    {/* 왼쪽: 입주일 이후 발생 방값 (C) */}
+                    <div className="bg-black/50 backdrop-blur-md p-6 rounded-2xl border border-zinc-800 h-40 flex flex-col justify-center items-center text-center">
                         <p className="text-zinc-500 text-[10px] md:text-xs mb-2 uppercase tracking-wide">입주일 이후로 발생한 방값</p>
-                        <div className="text-2xl md:text-3xl font-bold tabular-nums text-white flex items-baseline justify-start md:justify-center">
-                            <span className="text-sm md:text-lg text-zinc-500 font-bold mr-2 tracking-normal">{selectedUnit.name}</span>
-                            <span className="tracking-tighter">{convert(monthly).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-                            <span className="text-xs md:text-sm ml-1 tracking-normal">{selectedUnit.suffix}</span>
+                        <div className="text-2xl md:text-3xl font-bold tabular-nums text-white flex items-baseline justify-center">
+                            <span className="text-sm md:text-lg text-zinc-500 font-bold mr-2 tracking-wider">{selectedUnit.name}</span>
+                            <span className="tracking-tighter">
+                                {renderValue(monthly, {
+                                    whole: "",
+                                    decimal: "",
+                                    unit: "text-xs md:text-sm"
+                                })}
+                            </span>
                         </div>
                     </div>
-                    <div className="bg-black/50 backdrop-blur-md p-6 rounded-2xl border border-zinc-800 flex flex-col justify-center items-center">
-                        <div className="h-8 flex items-center justify-center overflow-hidden w-full text-center px-2">
-                            <AnimatePresence mode="wait">
-                                <motion.p
-                                    key={jokeIndex}
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: -10 }}
-                                    className="text-zinc-300 italic text-[11px] md:text-sm line-clamp-1"
-                                >
-                                    {JOKES[jokeIndex]}
-                                </motion.p>
-                            </AnimatePresence>
+
+                    {/* 오른쪽: 이번 달 누적 월세 (B) */}
+                    <div className="bg-black/50 backdrop-blur-md p-6 rounded-2xl border border-zinc-800 h-40 flex flex-col justify-center items-center text-center">
+                        <p className="text-zinc-500 text-[10px] md:text-xs mb-2 uppercase tracking-wide">지금까지 발생한 이번달 월세</p>
+                        <div className="text-2xl md:text-3xl font-bold tabular-nums text-white flex items-baseline justify-center">
+                            <span className="text-sm md:text-lg text-zinc-500 font-bold mr-2 tracking-wider">{selectedUnit.name}</span>
+                            <span className="tracking-tighter">
+                                {renderValue(thisMonth, {
+                                    whole: "",
+                                    decimal: "",
+                                    unit: "text-xs md:text-sm"
+                                })}
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -152,7 +186,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ rentData, onOpenSettings }
                     <div className="relative flex-1 w-full md:w-auto">
                         <button
                             onClick={() => setIsUnitMenuOpen(!isUnitMenuOpen)}
-                            className="w-full h-14 flex items-center justify-center gap-2 bg-transparent text-white border border-white/20 rounded-full font-bold hover:bg-white/10 transition-all text-sm md:text-base"
+                            className="w-full h-14 py-3 flex items-center justify-center gap-2 bg-transparent text-white border border-white/20 rounded-full font-bold hover:bg-white/10 transition-all text-sm md:text-base outline-none"
                         >
                             <span className="text-zinc-400 font-normal mr-1 text-xs">단위:</span>
                             {selectedUnit.name}
