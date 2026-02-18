@@ -186,7 +186,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ rentData, onOpenSettings }
 
                     <button
                         onClick={handleShare}
-                        className="flex-1 w-full md:w-auto h-14 flex items-center justify-center gap-2 bg-white text-black rounded-full font-bold hover:bg-zinc-200 transition-all active:scale-95 text-sm md:text-base"
+                        className="flex-1 w-full md:w-auto h-14 py-3 flex items-center justify-center gap-2 bg-white text-black rounded-full font-bold hover:bg-zinc-200 transition-all active:scale-95 text-sm md:text-base outline-none"
                     >
                         <Share2 size={20} />
                         결과 공유하기

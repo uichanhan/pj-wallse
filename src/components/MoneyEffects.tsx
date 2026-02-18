@@ -183,7 +183,8 @@ export const MoneyEffects: React.FC<MoneyEffectsProps> = ({ progress, unitName }
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         particlesRef.current.forEach((p) => {
-            const px = (p.x / 100) * canvas.width;
+            // Apply 20px padding as requested (x is percentage from 0 to 100)
+            const px = 20 + (p.x / 100) * (canvas.width - 40);
             const py = (p.y / 100) * canvas.height;
 
             const dx = px - mouseRef.current.x;
