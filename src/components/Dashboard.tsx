@@ -144,7 +144,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ rentData, onOpenSettings }
                             exit={{ opacity: 0, y: -10 }}
                             className="text-zinc-400 italic text-sm md:text-lg line-clamp-2 max-w-lg"
                         >
-                            "{JOKES[jokeIndex]}"
+                            &quot;{JOKES[jokeIndex]}&quot;
                         </motion.p>
                     </AnimatePresence>
                 </div>
