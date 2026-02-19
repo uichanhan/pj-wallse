@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { X } from 'lucide-react';
 import { RentData } from '../utils/rentUtils';
 
@@ -10,6 +10,57 @@ interface SettingsModalProps {
     data: RentData;
     onSave: (newData: RentData) => void;
 }
+
+// Helper component for dynamic width input to keep units sticky at 8px
+const AutoWidthInput: React.FC<{
+    value: string;
+    onChange: (val: string) => void;
+    placeholder: string;
+    unit?: string;
+    type?: string;
+    className?: string;
+    required?: boolean;
+    min?: string;
+    max?: string;
+}> = ({ value, onChange, placeholder, unit, type = "text", className = "", required, min, max }) => {
+    const spanRef = useRef<HTMLSpanElement>(null);
+    const [width, setWidth] = useState(0);
+
+    useEffect(() => {
+        if (spanRef.current) {
+            // Add a small buffer for cursor and padding
+            setWidth(spanRef.current.offsetWidth + 2);
+        }
+    }, [value, placeholder]);
+
+    return (
+        <div className="flex items-center gap-[8px] w-full">
+            <div className="relative flex items-center min-w-0">
+                <input
+                    type={type}
+                    value={value}
+                    onChange={(e) => onChange(e.target.value)}
+                    placeholder={placeholder}
+                    required={required}
+                    min={min}
+                    max={max}
+                    className={`bg-transparent text-white focus:outline-none text-sm transition-all duration-75 ${className}`}
+                    style={{ width: `${Math.max(width, 20)}px` }}
+                />
+                {/* Measuring span */}
+                <span
+                    ref={spanRef}
+                    className="absolute invisible whitespace-pre font-sans text-sm px-0"
+                >
+                    {value || placeholder}
+                </span>
+            </div>
+            {unit && (
+                <span className="text-zinc-500 text-sm font-bold shrink-0">{unit}</span>
+            )}
+        </div>
+    );
+};
 
 export const SettingsModal: React.FC<SettingsModalProps> = ({
     isOpen,
@@ -21,7 +72,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
     useEffect(() => {
         setFormData(data);
-    }, [data]);
+    }, [data, isOpen]);
 
     if (!isOpen) return null;
 
@@ -29,6 +80,42 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
         e.preventDefault();
         onSave(formData);
         onClose();
+    };
+
+    const handleDateChange = (val: string) => {
+        // Extract only digits
+        let digits = val.replace(/\D/g, '').substring(0, 8);
+
+        let yearStr = digits.substring(0, 4);
+        let monthStr = digits.substring(4, 6);
+        let dayStr = digits.substring(6, 8);
+
+        // [Validation] Month: 1-12
+        if (monthStr.length === 2) {
+            let m = parseInt(monthStr, 10);
+            if (m > 12) monthStr = '12';
+            if (m === 0) monthStr = '01';
+        }
+
+        // [Validation] Day: Max days in month/year
+        if (dayStr.length === 2 && monthStr.length === 2 && yearStr.length === 4) {
+            let y = parseInt(yearStr, 10);
+            let m = parseInt(monthStr, 10);
+            let d = parseInt(dayStr, 10);
+
+            // Get actual max days for this month
+            const maxDays = new Date(y, m, 0).getDate();
+            if (d > maxDays) dayStr = String(maxDays).padStart(2, '0');
+            if (d === 0) dayStr = '01';
+        }
+
+        // Format for display: YYYY.MM.DD
+        let formatted = yearStr;
+        if (monthStr) formatted += '.' + monthStr;
+        if (dayStr) formatted += '.' + dayStr;
+
+        // Internal store uses YYYY-MM-DD
+        setFormData({ ...formData, startDate: formatted.replace(/\./g, '-') });
     };
 
     return (
@@ -52,115 +139,68 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                             placeholder="예: 홍길동"
                         />
                     </div>
+
                     <div>
                         <label className="block text-sm font-medium text-zinc-400 mb-1 text-[11px] md:text-sm">매달 납부액</label>
                         <div className="flex items-center bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 focus-within:border-[#F22E30] transition-colors">
-                            <div className="flex items-center gap-[8px] min-w-0 w-full">
-                                <input
-                                    type="text"
-                                    value={formData.totalRent === 0 ? '' : formData.totalRent.toLocaleString()}
-                                    onChange={(e) => {
-                                        const value = e.target.value.replace(/,/g, '');
-                                        if (value === '') {
-                                            setFormData({ ...formData, totalRent: 0 });
-                                        } else if (!isNaN(Number(value))) {
-                                            setFormData({ ...formData, totalRent: Number(value) });
-                                        }
-                                    }}
-                                    className="bg-transparent text-white focus:outline-none text-sm"
-                                    placeholder="예: 600,000"
-                                    required
-                                    style={{
-                                        width: formData.totalRent === 0 ? '80px' : `${(formData.totalRent.toLocaleString().length * 8.5) + 2}px`,
-                                        minWidth: '20px'
-                                    }}
-                                />
-                                {formData.totalRent !== 0 && (
-                                    <span className="text-zinc-500 text-sm font-bold shrink-0">원</span>
-                                )}
-                            </div>
+                            <AutoWidthInput
+                                placeholder="예: 600,000"
+                                value={formData.totalRent === 0 ? '' : formData.totalRent.toLocaleString()}
+                                unit="원"
+                                onChange={(val) => {
+                                    const raw = val.replace(/,/g, '');
+                                    if (raw === '') {
+                                        setFormData({ ...formData, totalRent: 0 });
+                                    } else if (!isNaN(Number(raw))) {
+                                        setFormData({ ...formData, totalRent: Number(raw) });
+                                    }
+                                }}
+                                required
+                            />
                         </div>
                     </div>
+
                     <div>
                         <label className="block text-sm font-medium text-zinc-400 mb-1 text-[11px] md:text-sm">최초 입주일 (YYYY.MM.DD)</label>
-                        <input
-                            type="text"
-                            placeholder="예: 2026.01.18"
-                            pattern="\d{4}\.\d{2}\.\d{2}"
-                            maxLength={10}
-                            value={formData.startDate.replace(/-/g, '.')}
-                            onChange={(e) => {
-                                // Extract only up to 8 digits
-                                let digits = e.target.value.replace(/\D/g, '').substring(0, 8);
-
-                                // Format as YYYY.MM.DD
-                                let formatted = '';
-                                if (digits.length >= 1) {
-                                    formatted += digits.substring(0, 4);
-                                    if (digits.length > 4) {
-                                        formatted += '.' + digits.substring(4, 6);
-                                        if (digits.length > 6) {
-                                            formatted += '.' + digits.substring(6, 8);
-                                        }
-                                    }
-                                }
-
-                                // Internal storage as YYYY-MM-DD
-                                let internal = formatted.replace(/\./g, '-');
-                                setFormData({ ...formData, startDate: internal });
-                            }}
-                            onBlur={(e) => {
-                                // Ensure standard YYYY-MM-DD on blur if valid
-                                const val = e.target.value;
-                                const parts = val.split('.');
-                                if (parts.length === 3 && parts[0].length === 4 && parts[1].length === 2 && parts[2].length === 2) {
-                                    setFormData({ ...formData, startDate: parts.join('-') });
-                                }
-                            }}
-                            className="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-[#F22E30] transition-colors text-sm"
-                            required
-                        />
+                        <div className="flex items-center bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 focus-within:border-[#F22E30] transition-colors">
+                            <input
+                                type="text"
+                                placeholder="예: 2026.01.18"
+                                value={formData.startDate.replace(/-/g, '.')}
+                                onChange={(e) => handleDateChange(e.target.value)}
+                                className="w-full bg-transparent text-white focus:outline-none text-sm"
+                                required
+                            />
+                        </div>
                     </div>
+
                     <div>
                         <label className="block text-sm font-medium text-zinc-400 mb-1 text-[11px] md:text-sm">매달 납부일</label>
                         <div className="flex items-center bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 focus-within:border-[#F22E30] transition-colors">
-                            <div className="flex items-center gap-[8px] min-w-0 w-full">
-                                <input
-                                    type="number"
-                                    min="1"
-                                    max="31"
-                                    value={formData.paymentDay === 0 ? '' : formData.paymentDay}
-                                    onChange={(e) => {
-                                        const val = e.target.value;
-                                        if (val === '') {
-                                            setFormData({ ...formData, paymentDay: 0 });
-                                            return;
-                                        }
-
-                                        let num = parseInt(val, 10);
-                                        if (isNaN(num)) return;
-
-                                        // Auto-cap at 31
-                                        if (num > 31) num = 31;
-                                        // Floor at 1
-                                        if (num < 1) num = 1;
-
-                                        setFormData({ ...formData, paymentDay: num });
-                                    }}
-                                    className="bg-transparent text-white focus:outline-none text-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                                    placeholder="예: 25"
-                                    required
-                                    style={{
-                                        width: formData.paymentDay === 0 ? '45px' : `${(String(formData.paymentDay).length * 9) + 4}px`,
-                                        minWidth: '20px'
-                                    }}
-                                />
-                                {formData.paymentDay !== 0 && (
-                                    <span className="text-zinc-500 text-sm font-bold shrink-0">일</span>
-                                )}
-                            </div>
+                            <AutoWidthInput
+                                type="number"
+                                min="1"
+                                max="31"
+                                placeholder="예: 25"
+                                value={formData.paymentDay === 0 ? '' : String(formData.paymentDay)}
+                                unit="일"
+                                className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                onChange={(val) => {
+                                    if (val === '') {
+                                        setFormData({ ...formData, paymentDay: 0 });
+                                        return;
+                                    }
+                                    let num = parseInt(val, 10);
+                                    if (isNaN(num)) return;
+                                    if (num > 31) num = 31;
+                                    if (num < 1) num = 1;
+                                    setFormData({ ...formData, paymentDay: num });
+                                }}
+                                required
+                            />
                         </div>
                     </div>
+
                     <div className="mt-6">
                         <button
                             type="submit"
