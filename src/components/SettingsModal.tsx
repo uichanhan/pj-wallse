@@ -55,7 +55,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     <div>
                         <label className="block text-sm font-medium text-zinc-400 mb-1 text-[11px] md:text-sm">매달 납부액</label>
                         <div className="flex items-center bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 focus-within:border-[#F22E30] transition-colors">
-                            <div className="relative flex items-center min-w-0">
+                            <div className="flex items-center gap-[8px] min-w-0 w-full">
                                 <input
                                     type="text"
                                     value={formData.totalRent === 0 ? '' : formData.totalRent.toLocaleString()}
@@ -71,12 +71,12 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                                     placeholder="예: 600,000"
                                     required
                                     style={{
-                                        width: formData.totalRent === 0 ? '100px' : `${(formData.totalRent.toLocaleString().length * 8.5) + 5}px`,
+                                        width: formData.totalRent === 0 ? '80px' : `${(formData.totalRent.toLocaleString().length * 8.5) + 2}px`,
                                         minWidth: '20px'
                                     }}
                                 />
                                 {formData.totalRent !== 0 && (
-                                    <span className="text-zinc-500 text-sm font-bold ml-1 shrink-0">원</span>
+                                    <span className="text-zinc-500 text-sm font-bold shrink-0">원</span>
                                 )}
                             </div>
                         </div>
@@ -124,7 +124,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     <div>
                         <label className="block text-sm font-medium text-zinc-400 mb-1 text-[11px] md:text-sm">매달 납부일</label>
                         <div className="flex items-center bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 focus-within:border-[#F22E30] transition-colors">
-                            <div className="relative flex items-center min-w-0">
+                            <div className="flex items-center gap-[8px] min-w-0 w-full">
                                 <input
                                     type="number"
                                     min="1"
@@ -142,8 +142,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
                                         // Auto-cap at 31
                                         if (num > 31) num = 31;
-                                        // Floor at 1 (but allow 0/empty temporarily while typing if needed, 
-                                        // though type="number" with min="1" helps)
+                                        // Floor at 1
                                         if (num < 1) num = 1;
 
                                         setFormData({ ...formData, paymentDay: num });
@@ -152,12 +151,12 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                                     placeholder="예: 25"
                                     required
                                     style={{
-                                        width: formData.paymentDay === 0 ? '60px' : `${(String(formData.paymentDay).length * 9) + 15}px`,
-                                        minWidth: '30px'
+                                        width: formData.paymentDay === 0 ? '45px' : `${(String(formData.paymentDay).length * 9) + 4}px`,
+                                        minWidth: '20px'
                                     }}
                                 />
                                 {formData.paymentDay !== 0 && (
-                                    <span className="text-zinc-500 text-sm font-bold ml-1 shrink-0">일</span>
+                                    <span className="text-zinc-500 text-sm font-bold shrink-0">일</span>
                                 )}
                             </div>
                         </div>
