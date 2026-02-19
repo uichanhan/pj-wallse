@@ -50,12 +50,14 @@ export const Dashboard: React.FC<DashboardProps> = ({ rentData, onOpenSettings }
         return Math.min(today / dailyRent, 1);
     }, [today, perSecond]);
 
-    const convert = (value: number) => {
-        return value / selectedUnit.value;
-    };
 
     const renderValue = (value: number, sizeClasses: { whole: string, decimal: string, unit: string }, options?: { isGradient?: boolean }) => {
-        const formatted = convert(value).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        // Calculate conversion directly here to ensure atomic update of UI
+        const convertedValue = value / selectedUnit.value;
+        const formatted = convertedValue.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
         const [whole, decimal] = formatted.split('.');
 
         return (

@@ -114,7 +114,7 @@ interface MoneyEffectsProps {
     unitName: string;
 }
 
-export const MoneyEffects: React.FC<MoneyEffectsProps> = ({ progress, unitName }) => {
+export const MoneyEffects: React.FC<MoneyEffectsProps> = React.memo(({ progress, unitName }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const mouseRef = useRef({ x: -1000, y: -1000 });
     const particlesRef = useRef<Particle[]>([]);
@@ -242,4 +242,6 @@ export const MoneyEffects: React.FC<MoneyEffectsProps> = ({ progress, unitName }
             />
         </div>
     );
-};
+});
+
+MoneyEffects.displayName = 'MoneyEffects';

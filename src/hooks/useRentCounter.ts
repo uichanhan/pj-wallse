@@ -12,6 +12,8 @@ export const useRentCounter = (rentData: RentData | null) => {
     useEffect(() => {
         if (!rentData) return;
 
+        let frameId: number;
+
         const update = () => {
             const result = calculateAccumulatedRent(rentData, new Date());
             setAccumulated({
@@ -20,12 +22,12 @@ export const useRentCounter = (rentData: RentData | null) => {
                 thisMonth: result.monthlyAccumulation,
                 perSecond: result.rentPerSecond,
             });
+            frameId = requestAnimationFrame(update);
         };
 
-        update();
-        const interval = setInterval(update, 100); // Update every 100ms for smoother visual if needed, or 1000ms as per requirement
+        frameId = requestAnimationFrame(update);
 
-        return () => clearInterval(interval);
+        return () => cancelAnimationFrame(frameId);
     }, [rentData]);
 
     return accumulated;

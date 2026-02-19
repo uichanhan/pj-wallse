@@ -126,25 +126,34 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                         <div className="flex items-center bg-zinc-800 border border-zinc-700 rounded-lg px-4 py-2 focus-within:border-[#F22E30] transition-colors">
                             <div className="relative flex items-center min-w-0">
                                 <input
-                                    type="text"
+                                    type="number"
+                                    min="1"
+                                    max="31"
                                     value={formData.paymentDay === 0 ? '' : formData.paymentDay}
                                     onChange={(e) => {
-                                        const value = e.target.value.replace(/\D/g, '');
-                                        if (value === '') {
+                                        const val = e.target.value;
+                                        if (val === '') {
                                             setFormData({ ...formData, paymentDay: 0 });
-                                        } else {
-                                            const num = Number(value);
-                                            if (num <= 31) {
-                                                setFormData({ ...formData, paymentDay: num });
-                                            }
+                                            return;
                                         }
+
+                                        let num = parseInt(val, 10);
+                                        if (isNaN(num)) return;
+
+                                        // Auto-cap at 31
+                                        if (num > 31) num = 31;
+                                        // Floor at 1 (but allow 0/empty temporarily while typing if needed, 
+                                        // though type="number" with min="1" helps)
+                                        if (num < 1) num = 1;
+
+                                        setFormData({ ...formData, paymentDay: num });
                                     }}
-                                    className="bg-transparent text-white focus:outline-none text-sm"
+                                    className="bg-transparent text-white focus:outline-none text-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                                     placeholder="예: 25"
                                     required
                                     style={{
-                                        width: formData.paymentDay === 0 ? '60px' : `${(String(formData.paymentDay).length * 9) + 5}px`,
-                                        minWidth: '20px'
+                                        width: formData.paymentDay === 0 ? '60px' : `${(String(formData.paymentDay).length * 9) + 15}px`,
+                                        minWidth: '30px'
                                     }}
                                 />
                                 {formData.paymentDay !== 0 && (
